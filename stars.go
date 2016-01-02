@@ -3,18 +3,18 @@
 package main
 
 import (
-	"runtime"
 	log "github.com/Sirupsen/logrus"
 	"github.com/veandco/go-sdl2/sdl"
 	"math/rand"
 	"os"
+	"runtime"
 )
 
 var winWidth, winHeight int32 = 800, 600
 var starRadius int32 = 2
 var starBrightnessDecay float64 = 0.001
 var starBrightnessThreshold float64 = 0.05
-var numStars int = 100
+var numStars int = 10000
 var centX, centY int = 400, 300
 
 type Star struct {
@@ -30,14 +30,14 @@ func (s *Star) Birth() {
 }
 
 func (s *Star) RenderToSurface(surface *sdl.Surface) {
-	sBox := sdl.Rect{s.X-starRadius, s.Y-starRadius, starRadius*2, starRadius*2}
-//	var c = uint8(s.B * float64(255))
+	sBox := sdl.Rect{s.X - starRadius, s.Y - starRadius, starRadius * 2, starRadius * 2}
+	//	var c = uint8(s.B * float64(255))
 	// sColor := &sdl.Color{255, 255, 255, 255}
 	surface.FillRect(&sBox, colorBrightness(s.B))
 }
 
 func (s *Star) Life() {
-	s.B -= starBrightnessDecay;
+	s.B -= starBrightnessDecay
 	if s.B < starBrightnessThreshold {
 		s.Birth()
 	}
@@ -63,7 +63,7 @@ var palette = []uint32{
 }
 
 func colorBrightness(b float64) uint32 {
-	return palette[int(b * float64(15))]
+	return palette[int(b*float64(15))]
 }
 
 func (g *Game) RenderStarsToScreenSurface() int {
@@ -96,6 +96,7 @@ type Game struct {
 	/* private */
 	m_State StateEnum
 	nowMs   uint32
+	lastMs  uint32
 	/* private: SDL */
 	sdlRenderer      *sdl.Renderer
 	sdlScreenSurface *sdl.Surface
@@ -151,7 +152,7 @@ func (g *Game) Initialize() {
 	}
 
 	// Create stars
-	for i:=0; i<numStars; i++ {
+	for i := 0; i < numStars; i++ {
 		s := &Star{}
 		s.Birth()
 		g.m_Stars = append(g.m_Stars, s)
@@ -172,9 +173,10 @@ func (g *Game) Start() int {
 
 	g.ChangeState(STATE_PLAYING)
 	for g.Alive() {
-		g.NowMs()
-		g.PollEvents()
-		g.Render()
+		if g.NowMs() {
+			g.PollEvents()
+			g.Render()
+		}
 	}
 	return 0
 }
@@ -242,7 +244,7 @@ func (g *Game) PollEvents() {
 		case *sdl.QuitEvent:
 			g.Stop()
 		case *sdl.KeyUpEvent:
-			if t.Keysym.Sym == sdl.K_ESCAPE  {
+			if t.Keysym.Sym == sdl.K_ESCAPE {
 				g.Stop()
 			}
 		}
@@ -253,8 +255,13 @@ func (g *Game) Alive() bool {
 	return g.m_State < STATE_FINISHED
 }
 
-func (g *Game) NowMs() {
+func (g *Game) NowMs() bool {
 	g.nowMs = sdl.GetTicks()
+	if g.nowMs != g.lastMs {
+		g.lastMs = g.nowMs
+		return true
+	}
+	return false
 }
 
 type StateEnum uint
