@@ -1,5 +1,8 @@
 /** Copyright 2015 Outright Mental, Inc. */
 
+/** This performs poorly- it's included only to
+potentially investigate *why* it performs so poorly. */
+
 package main
 
 import (

@@ -14,13 +14,17 @@ import (
 var winWidth, winHeight int32 = 600, 600
 var starRadius int32 = 2
 var starBrightnessDecay float64 = 0.0012
-var starBrightnessThreshold float64 = 0.05
+var starBrightnessThreshold float64 = 0.05 // below this gets recycled
 var sweepDurationMs float64 = 10000
 var numStars int = 10000
-var centY, centX, maxR float64 = 300, 300, 300
-var (
-	twoPi float64 = math.Pi * 2
-)
+
+/* the smallest type of thing is a
+███████╗████████╗ █████╗ ██████╗
+██╔════╝╚══██╔══╝██╔══██╗██╔══██╗
+███████╗   ██║   ███████║██████╔╝
+╚════██║   ██║   ██╔══██║██╔══██╗
+███████║   ██║   ██║  ██║██║  ██║
+╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝*/
 
 type Star struct {
 	X int32
@@ -39,6 +43,14 @@ func (s *Star) Life() bool {
 	s.B -= starBrightnessDecay
 	return s.B > starBrightnessThreshold
 }
+
+/* there are many stars inside of a
+██████╗  █████╗ ██████╗  █████╗ ██████╗
+██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗
+██████╔╝███████║██║  ██║███████║██████╔╝
+██╔══██╗██╔══██║██║  ██║██╔══██║██╔══██╗
+██║  ██║██║  ██║██████╔╝██║  ██║██║  ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝*/
 
 func NewRadar() *Radar {
 	r := &Radar{
@@ -64,7 +76,7 @@ func (r *Radar) Initialize() {
 	// Create stars
 	for i := 0; i < numStars; i++ {
 		s := &Star{}
-		r.BirthStar(s)
+		s.B = rand.Float64()
 		r.m_Stars = append(r.m_Stars, s)
 	}
 }
@@ -96,38 +108,17 @@ func (r *Radar) BirthStar(s *Star) {
 	s.B = rand.Float64()
 }
 
-var palette = []uint32{
-	0xFF000000,
-	0xFF111111,
-	0xFF222222,
-	0xFF333333,
-	0xFF444444,
-	0xFF555555,
-	0xFF666666,
-	0xFF777777,
-	0xFF888888,
-	0xFF999999,
-	0xFFAAAAAA,
-	0xFFBBBBBB,
-	0xFFCCCCCC,
-	0xFFDDDDDD,
-	0xFFEEEEEE,
-	0xFFFFFFFF,
-}
-
-func colorBrightness(b float64) uint32 {
-	return palette[int(b*float64(15))]
-}
-
-func main() {
-	runtime.LockOSThread()
-	game := NewGame()
-	os.Exit(game.Start())
-}
+/* there is one radar for the whole
+ ██████╗  █████╗ ███╗   ███╗███████╗
+██╔════╝ ██╔══██╗████╗ ████║██╔════╝
+██║  ███╗███████║██╔████╔██║█████╗
+██║   ██║██╔══██║██║╚██╔╝██║██╔══╝
+╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗
+ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝*/
 
 func NewGame() *Game {
 	g := &Game{
-		Name: "stars",
+		Name: "radar stars",
 	}
 	g.Initialize()
 	return g
@@ -306,6 +297,20 @@ func (g *Game) NowMs() bool {
 	return false
 }
 
+/* the game is instantiated from
+███╗   ███╗ █████╗ ██╗███╗   ██╗
+████╗ ████║██╔══██╗██║████╗  ██║
+██╔████╔██║███████║██║██╔██╗ ██║
+██║╚██╔╝██║██╔══██║██║██║╚██╗██║
+██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
+╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝*/
+
+func main() {
+	runtime.LockOSThread()
+	game := NewGame()
+	os.Exit(game.Start())
+}
+
 type StateEnum uint
 
 const (
@@ -315,3 +320,32 @@ const (
 	STATE_FINISHED StateEnum = 6
 	STATE_FAILED   StateEnum = 7
 )
+
+var centY, centX float64 = float64(winHeight) / 2, float64(winWidth) / 2
+var maxR float64 = math.Min(centY, centX)
+var twoPi float64 = math.Pi * 2
+
+var palette = []uint32{
+	0xFF000000,
+	0xFF111111,
+	0xFF222222,
+	0xFF333333,
+	0xFF444444,
+	0xFF555555,
+	0xFF666666,
+	0xFF777777,
+	0xFF888888,
+	0xFF999999,
+	0xFFAAAAAA,
+	0xFFBBBBBB,
+	0xFFCCCCCC,
+	0xFFDDDDDD,
+	0xFFEEEEEE,
+	0xFFFFFFFF,
+}
+
+func colorBrightness(b float64) uint32 {
+	return palette[int(b*float64(15))]
+}
+
+

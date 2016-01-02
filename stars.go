@@ -15,7 +15,14 @@ var starRadius int32 = 2
 var starBrightnessDecay float64 = 0.001
 var starBrightnessThreshold float64 = 0.05
 var numStars int = 10000
-var centX, centY int = 400, 300
+
+/* the smallest type of thing is a
+███████╗████████╗ █████╗ ██████╗
+██╔════╝╚══██╔══╝██╔══██╗██╔══██╗
+███████╗   ██║   ███████║██████╔╝
+╚════██║   ██║   ██╔══██║██╔══██╗
+███████║   ██║   ██║  ██║██║  ██║
+╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝*/
 
 type Star struct {
 	X int32
@@ -31,8 +38,6 @@ func (s *Star) Birth() {
 
 func (s *Star) RenderToSurface(surface *sdl.Surface) {
 	sBox := sdl.Rect{s.X - starRadius, s.Y - starRadius, starRadius * 2, starRadius * 2}
-	//	var c = uint8(s.B * float64(255))
-	// sColor := &sdl.Color{255, 255, 255, 255}
 	surface.FillRect(&sBox, colorBrightness(s.B))
 }
 
@@ -43,42 +48,13 @@ func (s *Star) Life() {
 	}
 }
 
-var palette = []uint32{
-	0xFF000000,
-	0xFF111111,
-	0xFF222222,
-	0xFF333333,
-	0xFF444444,
-	0xFF555555,
-	0xFF666666,
-	0xFF777777,
-	0xFF888888,
-	0xFF999999,
-	0xFFAAAAAA,
-	0xFFBBBBBB,
-	0xFFCCCCCC,
-	0xFFDDDDDD,
-	0xFFEEEEEE,
-	0xFFFFFFFF,
-}
-
-func colorBrightness(b float64) uint32 {
-	return palette[int(b*float64(15))]
-}
-
-func (g *Game) RenderStarsToScreenSurface() int {
-	for _, star := range g.m_Stars {
-		star.RenderToSurface(g.sdlScreenSurface)
-		star.Life()
-	}
-	return 0
-}
-
-func main() {
-	runtime.LockOSThread()
-	game := NewGame()
-	os.Exit(game.Start())
-}
+/* there is one radar for the whole
+ ██████╗  █████╗ ███╗   ███╗███████╗
+██╔════╝ ██╔══██╗████╗ ████║██╔════╝
+██║  ███╗███████║██╔████╔██║█████╗
+██║   ██║██╔══██║██║╚██╔╝██║██╔══╝
+╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗
+ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝*/
 
 func NewGame() *Game {
 	g := &Game{
@@ -202,6 +178,14 @@ func (g *Game) Render() {
 	g.sdlRenderer.Present()
 }
 
+func (g *Game) RenderStarsToScreenSurface() int {
+	for _, star := range g.m_Stars {
+		star.RenderToSurface(g.sdlScreenSurface)
+		star.Life()
+	}
+	return 0
+}
+
 func (g *Game) Stop() {
 	g.ChangeState(STATE_FINISHED)
 }
@@ -266,6 +250,20 @@ func (g *Game) NowMs() bool {
 	return false
 }
 
+/* the game is instantiated from
+███╗   ███╗ █████╗ ██╗███╗   ██╗
+████╗ ████║██╔══██╗██║████╗  ██║
+██╔████╔██║███████║██║██╔██╗ ██║
+██║╚██╔╝██║██╔══██║██║██║╚██╗██║
+██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
+╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝*/
+
+func main() {
+	runtime.LockOSThread()
+	game := NewGame()
+	os.Exit(game.Start())
+}
+
 type StateEnum uint
 
 const (
@@ -275,3 +273,26 @@ const (
 	STATE_FINISHED StateEnum = 6
 	STATE_FAILED   StateEnum = 7
 )
+
+var palette = []uint32{
+	0xFF000000,
+	0xFF111111,
+	0xFF222222,
+	0xFF333333,
+	0xFF444444,
+	0xFF555555,
+	0xFF666666,
+	0xFF777777,
+	0xFF888888,
+	0xFF999999,
+	0xFFAAAAAA,
+	0xFFBBBBBB,
+	0xFFCCCCCC,
+	0xFFDDDDDD,
+	0xFFEEEEEE,
+	0xFFFFFFFF,
+}
+
+func colorBrightness(b float64) uint32 {
+	return palette[int(b*float64(15))]
+}

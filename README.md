@@ -1,8 +1,22 @@
 # go-SDL-experiements
 
+# Stars
+
+    go run stars.go
+
+![Stars](docs/stars.png)
+
 # Radar Stars
 
+    go run radar_stars.go
+
 ![Radar Stars](docs/radar_stars.png)
+
+# Stars in Goroutine (anti-pattern)
+
+This performs poorly- it's included only to potentially investigate *why* it performs so poorly.
+
+    go run stars_goroutine.go
 
 ## Tips
 
