@@ -9,6 +9,7 @@ import (
 	"math"
 	"os"
 	"runtime"
+	"sort"
 )
 
 var winWidth, winHeight int32 = 600, 600
@@ -42,6 +43,23 @@ func (s *Star) Life() bool {
 	return s.B > starBrightnessThreshold
 }
 
+type starSlice []*Star
+
+// Len is part of sort.Interface.
+func (d starSlice) Len() int {
+    return len(d)
+}
+
+// Swap is part of sort.Interface.
+func (d starSlice) Swap(i, j int) {
+    d[i], d[j] = d[j], d[i]
+}
+
+// Less is part of sort.Interface. We use B as the value to sort by
+func (d starSlice) Less(i, j int) bool {
+    return d[i].B < d[j].B
+}
+
 /* there are many stars inside of a
 ██████╗  █████╗ ██████╗  █████╗ ██████╗
 ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗
@@ -67,7 +85,7 @@ type Radar struct {
 	NowMy float64
 	NowSweep float64
 	/* private */
-	m_Stars []*Star
+	m_Stars starSlice
 }
 
 func (r *Radar) Initialize() {
@@ -80,12 +98,14 @@ func (r *Radar) Initialize() {
 }
 
 func (r *Radar) RenderToSurface(surface *sdl.Surface) {
+	// First, sort the stars (by brightness) for optimal rendering
+	sort.Sort(r.m_Stars)
 	r.Life()
 	for _, star := range r.m_Stars {
+		star.RenderToSurface(surface)
 		if !star.Life() {
 			r.BirthStar(star)
 		}
-		star.RenderToSurface(surface)
 	}
 }
 
