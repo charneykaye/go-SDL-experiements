@@ -12,8 +12,8 @@ import (
 )
 
 var winWidth, winHeight int32 = 600, 600
-var starRadius int32 = 2
-var starBrightnessDecay float64 = 0.0012
+var starRadius int32 = 4
+var starBrightnessDecay float64 = 0.0015
 var starBrightnessThreshold float64 = 0.05 // below this gets recycled
 var sweepDurationMs float64 = 10000
 var numStars int = 10000
@@ -34,8 +34,6 @@ type Star struct {
 
 func (s *Star) RenderToSurface(surface *sdl.Surface) {
 	sBox := sdl.Rect{s.X - starRadius, s.Y - starRadius, starRadius * 2, starRadius * 2}
-	//	var c = uint8(s.B * float64(255))
-	// sColor := &sdl.Color{255, 255, 255, 255}
 	surface.FillRect(&sBox, colorBrightness(s.B))
 }
 
@@ -105,7 +103,7 @@ func (r *Radar) BirthStar(s *Star) {
 	d := rand.Float64() * maxR
 	s.X = int32(math.Max(0,math.Min(float64(winWidth), centX + d * r.NowMx)))
 	s.Y = int32(math.Max(0,math.Min(float64(winHeight), centY + d * r.NowMy)))
-	s.B = rand.Float64()
+	s.B = 0.75 + rand.Float64() * 0.25
 }
 
 /* there is one radar for the whole
@@ -322,7 +320,7 @@ const (
 )
 
 var centY, centX float64 = float64(winHeight) / 2, float64(winWidth) / 2
-var maxR float64 = math.Min(centY, centX)
+var maxR float64 = math.Min(centY, centX) - 2 * float64(starRadius)
 var twoPi float64 = math.Pi * 2
 
 var palette = []uint32{
