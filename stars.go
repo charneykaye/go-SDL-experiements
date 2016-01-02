@@ -137,7 +137,8 @@ func (g *Game) Initialize() {
 		}).Fatal("Failed to create window")
 	}
 
-	g.sdlRenderer, err = sdl.CreateRenderer(g.sdlWindow, -1, sdl.RENDERER_ACCELERATED)
+	g.sdlRenderer, err = sdl.CreateRenderer(g.sdlWindow, -1,
+		sdl.RENDERER_ACCELERATED | sdl.RENDERER_PRESENTVSYNC)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
@@ -194,6 +195,7 @@ func (g *Game) Render() {
 			"error": err,
 		}).Warn("Could not create texture from surface")
 	}
+	defer g.sdlScreenTexture.Destroy()
 
 	g.sdlRenderer.Copy(g.sdlScreenTexture, nil, nil)
 
