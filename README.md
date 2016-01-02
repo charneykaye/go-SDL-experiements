@@ -1,5 +1,7 @@
 # go-SDL-experiements
 
+Experiments with **[go-sdl2](https://github.com/veandco/go-sdl2)** - Go bindings for the C++ library **[Simple DirectMedia Layer](https://www.libsdl.org/)** (SDL 2.0)
+
 Author: [Charney Kaye](http://w.charney.io)
 
 ## Stars
