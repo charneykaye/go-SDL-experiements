@@ -6,15 +6,13 @@ package main
 // void AudioCallback(void *userdata, Uint16 *stream, int len);
 import "C"
 import (
-	"fmt"
 	log "github.com/Sirupsen/logrus"
+	// "io"
 	"math"
-	"reflect"
+	// "fmt"
+	"os"
 	"time"
-	"unsafe"
-
 	"github.com/veandco/go-sdl2/sdl"
-
 )
 
 const (
@@ -27,7 +25,7 @@ const (
 
 func ReadAudio() {
 
-	file := "assets/sounds/percussion/808/kick1.wav"
+	file := os.Args[1]
 
 	data, spec := sdl.LoadWAV(file, &sdl.AudioSpec{})
 
@@ -38,6 +36,25 @@ func ReadAudio() {
 	for n := 0; n < len(data); n += 2 {
 		StoreSample(data[n:n+2])
 	}
+/*
+	wavReader, err := wav.NewReader(testWav, testInfo.Size())
+	if err != nil {
+		panic(err)
+	}
+
+	storedAudio = make([]C.Uint16, 0)
+
+sampleLoop:
+	for {
+		s, err := wavReader.ReadSample()
+		if err == io.EOF {
+			break sampleLoop
+		} else if err != nil {
+			panic(err)
+		}
+		storedAudio = append(storedSample, C.Uint16(s))
+	}
+*/
 }
 
 func StoreSample(s []byte) {
@@ -45,26 +62,6 @@ func StoreSample(s []byte) {
 }
 
 var storedAudio []C.Uint16
-var	(
-	defaultSample = uint16(0xFFFF)
-	defaultAudio = C.Uint16(defaultSample)
-)
-
-//export AudioCallback
-func AudioCallback(userdata unsafe.Pointer, stream *C.Uint16, length C.int) {
-	n := int(length)
-	hdr := reflect.SliceHeader{Data: uintptr(unsafe.Pointer(stream)), Len: n, Cap: n}
-	buf := *(*[]C.Uint16)(unsafe.Pointer(&hdr))
-
-	for i := 0; i < n; i += 1 {
-		if i < len(storedAudio) {
-			buf[i] = storedAudio[i]
-		} else {
-			buf[i] = defaultAudio
-		}
-	}
-	fmt.Printf("AudioCallback length %d\n", n)
-}
 
 func main() {
 	if err := sdl.Init(sdl.INIT_AUDIO); err != nil {
@@ -75,17 +72,17 @@ func main() {
 	}
 	defer sdl.Quit()
 
-	ReadAudio()
+	// spec := &sdl.AudioSpec{
+	// 	Freq:     sampleHz,
+	// 	Format:   sdl.AUDIO_U16,
+	// 	Channels: 1,
+	// 	Samples:  sampleHz,
+	// 	Callback: sdl.AudioCallback(C.AudioCallback),
+	// }
+	// sdl.OpenAudio(spec, nil)
+	// sdl.PauseAudio(false)
 
-	spec := &sdl.AudioSpec{
-		Freq:     sampleHz,
-		Format:   sdl.AUDIO_U16,
-		Channels: 2,
-		Samples:  sampleHz,
-		Callback: sdl.AudioCallback(C.AudioCallback),
-	}
-	sdl.OpenAudio(spec, nil)
-	sdl.PauseAudio(false)
+	ReadAudio()
 
 	time.Sleep(1 * time.Second)
 }
