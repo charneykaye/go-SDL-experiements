@@ -83,7 +83,7 @@ func main() {
 	game := NewGame()
 	go func() {
 		exit <- game.Start()
-		}()
+	}()
 	code := <-exit
 	os.Exit(code)
 }
@@ -146,7 +146,7 @@ func (g *Game) Initialize() {
 	}
 
 	g.sdlRenderer, err = sdl.CreateRenderer(g.sdlWindow, -1,
-		sdl.RENDERER_ACCELERATED | sdl.RENDERER_PRESENTVSYNC)
+		sdl.RENDERER_ACCELERATED|sdl.RENDERER_PRESENTVSYNC)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,

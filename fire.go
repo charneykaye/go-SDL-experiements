@@ -5,17 +5,17 @@ package main
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/veandco/go-sdl2/sdl"
-	"math/rand"
 	"math"
+	"math/rand"
 	"os"
 	"runtime"
 )
 
 var (
-	fireWidth, fireHeight int = 300, 200
-	firePointSize int = 3
-	fireGenRows int = 2
-	fireDecay float64 = 0.98
+	fireWidth, fireHeight int     = 300, 200
+	firePointSize         int     = 3
+	fireGenRows           int     = 2
+	fireDecay             float64 = 0.98
 )
 
 /* the raster is in a
@@ -47,7 +47,7 @@ func (r *Fire) Initialize() {
 
 func (r *Fire) RenderToSurface(surface *sdl.Surface) {
 	sBox := sdl.Rect{0, 0, int32(firePointSize), int32(firePointSize)}
-	for y := 0; y < fireHeight - 2; y++ {
+	for y := 0; y < fireHeight-2; y++ {
 		sBox.Y = int32(y * firePointSize)
 		for x := 0; x < fireWidth; x++ {
 			r.PointLife(y, x)
@@ -62,30 +62,30 @@ func (r *Fire) RenderToSurface(surface *sdl.Surface) {
 	}
 }
 
-func(r *Fire) PointLife(y int, x int) {
+func (r *Fire) PointLife(y int, x int) {
 	// each row inherits from higher rows
 	r.Points[y][x] = fireDecay * (
-//		r.PointSeek(y + 2, x - 2) +
-		r.PointSeek(y + 2, x - 1) +
-		r.PointSeek(y + 2, x) +
-		r.PointSeek(y + 2, x + 1) +
-//		r.PointSeek(y + 2, x + 2) +
-		r.PointSeek(y + 1, x - 1) +
-		r.PointSeek(y + 1, x + 1) +
-		r.PointSeek(y + 1, x)) / 6
+	//		r.PointSeek(y + 2, x - 2) +
+	r.PointSeek(y+2, x-1) +
+		r.PointSeek(y+2, x) +
+		r.PointSeek(y+2, x+1) +
+		//		r.PointSeek(y + 2, x + 2) +
+		r.PointSeek(y+1, x-1) +
+		r.PointSeek(y+1, x+1) +
+		r.PointSeek(y+1, x)) / 6
 }
 
-func(r *Fire) PointSeek(y int, x int) float64 {
+func (r *Fire) PointSeek(y int, x int) float64 {
 	if y < 0 || y > fireLimitY || x < 0 || x > fireLimitX {
 		return 0
 	}
 	return r.Points[y][x]
 }
 
-func(r *Fire) PointBirth(y int, x int) {
+func (r *Fire) PointBirth(y int, x int) {
 	// bottom row generates pixels that are on/off
 	// chance of being on (c) is inversely proportional to distance from center
-	if rand.Float64() < 1 - math.Abs(float64(x - fireCenterX)) / float64(fireCenterX) {
+	if rand.Float64() < 1-math.Abs(float64(x-fireCenterX))/float64(fireCenterX) {
 		r.Points[y][x] = 1
 	} else {
 		r.Points[y][x] = 0
@@ -158,7 +158,7 @@ func (g *Game) Initialize() {
 	}
 
 	g.sdlRenderer, err = sdl.CreateRenderer(g.sdlWindow, -1,
-		sdl.RENDERER_ACCELERATED | sdl.RENDERER_PRESENTVSYNC)
+		sdl.RENDERER_ACCELERATED|sdl.RENDERER_PRESENTVSYNC)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
@@ -306,12 +306,12 @@ const (
 )
 
 var (
-	winWidth = fireWidth * firePointSize
-	winHeight = fireHeight * firePointSize - firePointSize * fireGenRows
-	fireLimitX = fireWidth - 1
-	fireLimitY = fireHeight - 1
-	fireCenterX = fireWidth / 2
-	fireRenderOffsetSrc = &sdl.Rect{0, 0, int32(winWidth), int32(winHeight - firePointSize * fireGenRows)}
+	winWidth            = fireWidth * firePointSize
+	winHeight           = fireHeight*firePointSize - firePointSize*fireGenRows
+	fireLimitX          = fireWidth - 1
+	fireLimitY          = fireHeight - 1
+	fireCenterX         = fireWidth / 2
+	fireRenderOffsetSrc = &sdl.Rect{0, 0, int32(winWidth), int32(winHeight - firePointSize*fireGenRows)}
 )
 
 var palette = []uint32{
@@ -336,5 +336,3 @@ var palette = []uint32{
 func colorBrightness(b float64) uint32 {
 	return palette[int(b*float64(15))]
 }
-
-
