@@ -1,5 +1,7 @@
 # go-SDL-experiements
 
+Author: [Charney Kaye](http://w.charney.io)
+
 # Stars
 
     go run stars.go

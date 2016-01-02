@@ -1,4 +1,4 @@
-/** Copyright 2015 Outright Mental, Inc. */
+/** Author: Charney Kaye */
 
 package main
 
