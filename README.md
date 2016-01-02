@@ -2,25 +2,27 @@
 
 Author: [Charney Kaye](http://w.charney.io)
 
-# Stars
+## Stars
 
     go run stars.go
 
 ![Stars](docs/stars.png)
 
-# Radar Stars
+## Radar Stars
 
     go run radar_stars.go
 
 ![Radar Stars](docs/radar_stars.png)
 
-# Stars in Goroutine (anti-pattern)
+***TODO:*** Replace infinite `for alive {}` loop with a sdl.Event handler, that only performs the life/render work in between display frames?
+
+## Stars in Goroutine (anti-pattern)
 
 This performs poorly- it's included only to potentially investigate *why* it performs so poorly.
 
     go run stars_goroutine.go
 
-## Tips
+# Tips
 
 ### Texture Garbage Collection 
 
