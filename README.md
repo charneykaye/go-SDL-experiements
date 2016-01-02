@@ -22,6 +22,8 @@ Author: [Charney Kaye](http://w.charney.io)
 
     go run fire.go
 
+***TODO:*** Track mouse motion and generate fire on it
+
 ***TODO:*** Replace infinite `for alive {}` loop with a sdl.Event handler, that only performs the life/render work in between display frames?
 
 ## Stars in Goroutine (anti-pattern)

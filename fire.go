@@ -14,7 +14,7 @@ import (
 var (
 	fireWidth, fireHeight int = 300, 300
 	firePointSize int = 2
-	fireDecay float64 = 0.99
+	fireDecay float64 = 0.98
 )
 
 /* the raster is in a
@@ -46,7 +46,7 @@ func (r *Fire) Initialize() {
 
 func (r *Fire) RenderToSurface(surface *sdl.Surface) {
 	sBox := sdl.Rect{0, 0, int32(firePointSize), int32(firePointSize)}
-	for y := 0; y < fireLimitY; y++ {
+	for y := 0; y < fireHeight - 2; y++ {
 		sBox.Y = int32(y * firePointSize)
 		for x := 0; x < fireWidth; x++ {
 			r.PointLife(y, x)
@@ -54,23 +54,31 @@ func (r *Fire) RenderToSurface(surface *sdl.Surface) {
 			surface.FillRect(&sBox, colorBrightness(r.Points[y][x]))
 		}
 	}
-	for x := 0; x < fireWidth; x++ {
-		r.PointBirth(fireLimitY, x)
+	for y := fireHeight - 2; y < fireHeight; y++ {
+		for x := 0; x < fireWidth; x++ {
+			r.PointBirth(y, x)
+		}
 	}
 }
 
 func(r *Fire) PointLife(y int, x int) {
-	// each row inherits from higher row
-	if x == 0 {
-		// lower x-limit
-		r.Points[y][x] = fireDecay * (r.Points[y+1][x] + r.Points[y+1][x + 1]) / 2
-	} else if x == fireLimitX {
-		// upper x-limit
-		r.Points[y][x] = fireDecay * (r.Points[y+1][x] + r.Points[y+1][x - 1]) / 2
-	} else {
-		// all x between
-		r.Points[y][x] = fireDecay * (r.Points[y+1][x - 1] + r.Points[y+1][x] + r.Points[y+1][x + 1]) / 3
+	// each row inherits from higher rows
+	r.Points[y][x] = fireDecay * (
+//		r.PointSeek(y + 2, x - 2) +
+		r.PointSeek(y + 2, x - 1) +
+		r.PointSeek(y + 2, x) +
+		r.PointSeek(y + 2, x + 1) +
+//		r.PointSeek(y + 2, x + 2) +
+		r.PointSeek(y + 1, x - 1) +
+		r.PointSeek(y + 1, x + 1) +
+		r.PointSeek(y + 1, x)) / 6
+}
+
+func(r *Fire) PointSeek(y int, x int) float64 {
+	if y < 0 || y > fireLimitY || x < 0 || x > fireLimitX {
+		return 0
 	}
+	return r.Points[y][x]
 }
 
 func(r *Fire) PointBirth(y int, x int) {
@@ -306,12 +314,12 @@ var (
 
 var palette = []uint32{
 	0xFF000000,
-	0xFF25120c,
-	0xFF3b1b06,
-	0xFF5a2211,
-	0xFF722400,
-	0xFF9c3e0a,
-	0xFFbc490a,
+	0xFF251d1a,
+	0xFF3b2d23,
+	0xFF5a372d,
+	0xFF72432e,
+	0xFF9c562f,
+	0xFFbc5b26,
 	0xFFe16205,
 	0xFFf4700b,
 	0xFFfc8409,
