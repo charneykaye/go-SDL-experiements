@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	fireWidth, fireHeight int = 300, 300
-	firePointSize int = 2
+	fireWidth, fireHeight int = 300, 200
+	firePointSize int = 3
 	fireGenRows int = 2
 	fireDecay float64 = 0.98
 )
@@ -212,7 +212,7 @@ func (g *Game) Render() {
 	}
 	defer g.sdlScreenTexture.Destroy()
 
-	g.sdlRenderer.Copy(g.sdlScreenTexture, fireRenderOffsetSrc, fireRenderOffsetDst)
+	g.sdlRenderer.Copy(g.sdlScreenTexture, fireRenderOffsetSrc, nil)
 
 	g.sdlRenderer.Present()
 }
@@ -307,12 +307,11 @@ const (
 
 var (
 	winWidth = fireWidth * firePointSize
-	winHeight = fireHeight * firePointSize
+	winHeight = fireHeight * firePointSize - firePointSize * fireGenRows
 	fireLimitX = fireWidth - 1
 	fireLimitY = fireHeight - 1
 	fireCenterX = fireWidth / 2
 	fireRenderOffsetSrc = &sdl.Rect{0, 0, int32(winWidth), int32(winHeight - firePointSize * fireGenRows)}
-	fireRenderOffsetDst = &sdl.Rect{0, int32(firePointSize * fireGenRows), int32(winWidth), int32(winHeight)}
 )
 
 var palette = []uint32{
