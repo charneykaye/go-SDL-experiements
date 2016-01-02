@@ -16,6 +16,14 @@ Author: [Charney Kaye](http://w.charney.io)
 
 ***TODO:*** Replace infinite `for alive {}` loop with a sdl.Event handler, that only performs the life/render work in between display frames?
 
+## Fire
+
+![Fire](docs/fire.png)
+
+    go run fire.go
+
+***TODO:*** Replace infinite `for alive {}` loop with a sdl.Event handler, that only performs the life/render work in between display frames?
+
 ## Stars in Goroutine (anti-pattern)
 
 This performs poorly- it's included only to potentially investigate *why* it performs so poorly.
