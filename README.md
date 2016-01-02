@@ -1,10 +1,14 @@
 # go-SDL-experiements
 
+# Radar Stars
+
+![Radar Stars](docs/radar_stars.png)
+
 ## Tips
 
 ### Texture Garbage Collection 
 
-Be sure to call texture.Destroy once you're done with a texture.
+Be sure to call `texture.Destroy` once you're done with a texture.
 
     defer g.sdlScreenTexture.Destroy()
 
