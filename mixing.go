@@ -6,45 +6,22 @@ package main
 // void AudioCallback(void *userdata, Uint16 *stream, int len);
 import "C"
 import (
+	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"math"
+	"reflect"
 	"time"
+	"unsafe"
 
 	"github.com/veandco/go-sdl2/sdl"
-	"github.com/outrightmental/go-atomix"
+
 )
 
 const (
+	toneHz   = 260
 	sampleHz = 44100
-	numSamples = 4096
+	dPhase   = 2 * math.Pi * toneHz / sampleHz
 )
-
-func main() {
-	if err := sdl.Init(sdl.INIT_AUDIO); err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Fatal("Cannot init SDL")
-		return
-	}
-	defer sdl.Quit() // TODO: wrap this with func: recover from panic (pause audio stream?) then sdl.Quit
-
-	spec := atomix.Spec(&sdl.AudioSpec{
-		Freq:     sampleHz,
-		Format:   sdl.AUDIO_U16,
-		Channels: 2,
-		Samples:  numSamples,
-	})
-	sdl.OpenAudio(spec, nil)
-	sdl.PauseAudio(false)
-	log.WithFields(log.Fields{
-		"spec": spec,
-		}).Info("")
-
-	time.Sleep(1 * time.Second)
-}
-
-
-
-/*
 
 // read audio file
 
@@ -89,4 +66,26 @@ func AudioCallback(userdata unsafe.Pointer, stream *C.Uint16, length C.int) {
 	fmt.Printf("AudioCallback length %d\n", n)
 }
 
-*/
+func main() {
+	if err := sdl.Init(sdl.INIT_AUDIO); err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Fatal("Cannot init SDL")
+		return
+	}
+	defer sdl.Quit()
+
+	ReadAudio()
+
+	spec := &sdl.AudioSpec{
+		Freq:     sampleHz,
+		Format:   sdl.AUDIO_U16,
+		Channels: 2,
+		Samples:  sampleHz,
+		Callback: sdl.AudioCallback(C.AudioCallback),
+	}
+	sdl.OpenAudio(spec, nil)
+	sdl.PauseAudio(false)
+
+	time.Sleep(1 * time.Second)
+}

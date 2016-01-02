@@ -5,8 +5,8 @@ package main
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/veandco/go-sdl2/sdl"
-	"math/rand"
 	"math"
+	"math/rand"
 	"os"
 	"runtime"
 	"sort"
@@ -47,17 +47,17 @@ type starSlice []*Star
 
 // Len is part of sort.Interface.
 func (d starSlice) Len() int {
-    return len(d)
+	return len(d)
 }
 
 // Swap is part of sort.Interface.
 func (d starSlice) Swap(i, j int) {
-    d[i], d[j] = d[j], d[i]
+	d[i], d[j] = d[j], d[i]
 }
 
 // Less is part of sort.Interface. We use B as the value to sort by
 func (d starSlice) Less(i, j int) bool {
-    return d[i].B < d[j].B
+	return d[i].B < d[j].B
 }
 
 /* there are many stars inside of a
@@ -79,11 +79,11 @@ func NewRadar() *Radar {
 
 type Radar struct {
 	SweepPerTick float64
-	lastMs uint32
-	winWidth int32
-	NowMx float64
-	NowMy float64
-	NowSweep float64
+	lastMs       uint32
+	winWidth     int32
+	NowMx        float64
+	NowMy        float64
+	NowSweep     float64
 	/* private */
 	m_Stars starSlice
 }
@@ -111,7 +111,7 @@ func (r *Radar) RenderToSurface(surface *sdl.Surface) {
 
 func (r *Radar) Life() {
 	nowMs := sdl.GetTicks()
-	r.NowSweep += r.SweepPerTick * float64(nowMs - r.lastMs)
+	r.NowSweep += r.SweepPerTick * float64(nowMs-r.lastMs)
 	r.lastMs = nowMs
 	if r.NowSweep > twoPi {
 		r.NowSweep -= twoPi
@@ -121,9 +121,9 @@ func (r *Radar) Life() {
 
 func (r *Radar) BirthStar(s *Star) {
 	d := rand.Float64() * maxR
-	s.X = int32(math.Max(0,math.Min(float64(winWidth), centX + d * r.NowMx)))
-	s.Y = int32(math.Max(0,math.Min(float64(winHeight), centY + d * r.NowMy)))
-	s.B = 0.75 + rand.Float64() * 0.25
+	s.X = int32(math.Max(0, math.Min(float64(winWidth), centX+d*r.NowMx)))
+	s.Y = int32(math.Max(0, math.Min(float64(winHeight), centY+d*r.NowMy)))
+	s.B = 0.75 + rand.Float64()*0.25
 }
 
 /* there is one radar for the whole
@@ -192,7 +192,7 @@ func (g *Game) Initialize() {
 	}
 
 	g.sdlRenderer, err = sdl.CreateRenderer(g.sdlWindow, -1,
-		sdl.RENDERER_ACCELERATED | sdl.RENDERER_PRESENTVSYNC)
+		sdl.RENDERER_ACCELERATED|sdl.RENDERER_PRESENTVSYNC)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err,
@@ -340,7 +340,7 @@ const (
 )
 
 var centY, centX float64 = float64(winHeight) / 2, float64(winWidth) / 2
-var maxR float64 = math.Min(centY, centX) - 2 * float64(starRadius)
+var maxR float64 = math.Min(centY, centX) - 2*float64(starRadius)
 var twoPi float64 = math.Pi * 2
 
 var palette = []uint32{
@@ -365,5 +365,3 @@ var palette = []uint32{
 func colorBrightness(b float64) uint32 {
 	return palette[int(b*float64(15))]
 }
-
-
