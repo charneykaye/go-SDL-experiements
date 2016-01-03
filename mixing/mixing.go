@@ -9,12 +9,12 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"time"
 
-	"github.com/veandco/go-sdl2/sdl"
 	"github.com/outrightmental/go-atomix"
+	"github.com/veandco/go-sdl2/sdl"
 )
 
 const (
-	sampleHz = 44100
+	sampleHz   = 44100
 	numSamples = 4096
 )
 
@@ -29,30 +29,32 @@ func main() {
 
 	var (
 		start = time.Now().Add(1 * time.Second) // 1 second delay before start
-		beat = 500 * time.Millisecond
+		beat  = 500 * time.Millisecond
 		loops = 4
-		)
+	)
 
 	var (
-		p808 = "assets/sounds/percussion/808/"
+		p808  = "assets/sounds/percussion/808/"
 		kick1 = p808 + "kick1.wav"
 		kick2 = p808 + "kick2.wav"
 		snare = p808 + "snare.wav"
 		marac = p808 + "maracas.wav"
-		)
+	)
 
+	t := start
 	for n := 0; n < loops; n++ {
-		atomix.Play(kick1, start, 1)
-		atomix.Play(marac, start + 0.5 * beat, 0.5)
-		atomix.Play(snare, start + 1 * beat, 0.8)
-		atomix.Play(marac, start + 1.5 * beat, 0.5)
-		atomix.Play(kick2, start + 1.75 * beat, 0.9)
-		atomix.Play(marac, start + 2.5 * beat, 0.5)
-		atomix.Play(kick2, start + 2.5 * beat, 0.9)
-		atomix.Play(snare, start + 3 * beat, 0.8)
-		atomix.Play(marac, start + 3.5 * beat, 0.5)
-		start += 4 * beat
+		atomix.Play(kick1, t, 1)
+		atomix.Play(marac, t+0.5*beat, 0.5)
+		atomix.Play(snare, t+1*beat, 0.8)
+		atomix.Play(marac, t+1.5*beat, 0.5)
+		atomix.Play(kick2, t+1.75*beat, 0.9)
+		atomix.Play(marac, t+2.5*beat, 0.5)
+		atomix.Play(kick2, t+2.5*beat, 0.9)
+		atomix.Play(snare, t+3*beat, 0.8)
+		atomix.Play(marac, t+3.5*beat, 0.5)
+		t += 4 * beat
 	}
+	runLength := loops*4*beat + 2*second
 
 	spec := atomix.Spec(&sdl.AudioSpec{
 		Freq:     sampleHz,
@@ -64,7 +66,7 @@ func main() {
 	sdl.PauseAudio(false)
 	log.WithFields(log.Fields{
 		"spec": spec,
-		}).Info("")
+	}).Info("")
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(runLength)
 }
