@@ -29,7 +29,7 @@ func main() {
 
 	var (
 		start = time.Now().Add(1 * time.Second) // 1 second delay before start
-		beat  = 500 * time.Millisecond
+		step = 125 * time.Millisecond
 		loops = 4
 	)
 
@@ -49,19 +49,22 @@ func main() {
 	})
 
 	t := start
+	loopDur := 16 * step
+	totalDur := time.Duration(0)
 	for n := 0; n < loops; n++ {
 		atomix.Play(kick1, t, 1)
-		atomix.Play(marac, t+0.5*beat, 0.5)
-		atomix.Play(snare, t+1*beat, 0.8)
-		atomix.Play(marac, t+1.5*beat, 0.5)
-		atomix.Play(kick2, t+1.75*beat, 0.9)
-		atomix.Play(marac, t+2.5*beat, 0.5)
-		atomix.Play(kick2, t+2.5*beat, 0.9)
-		atomix.Play(snare, t+3*beat, 0.8)
-		atomix.Play(marac, t+3.5*beat, 0.5)
-		t += 4 * beat
+		atomix.Play(marac, t.Add(1 * step), 0.5)
+		atomix.Play(snare, t.Add(4 * step), 0.8)
+		atomix.Play(marac, t.Add(6 * step), 0.5)
+		atomix.Play(kick2, t.Add(7 * step), 0.9)
+		atomix.Play(marac, t.Add(10 * step), 0.5)
+		atomix.Play(kick2, t.Add(10 * step), 0.9)
+		atomix.Play(snare, t.Add(12 * step), 0.8)
+		atomix.Play(marac, t.Add(14 * step), 0.5)
+		t = t.Add(loopDur)
+		totalDur += loopDur
 	}
-	runLength := loops*4*beat + 2*second
+	runLength := totalDur + 2 * time.Second
 
 	sdl.OpenAudio(spec, nil)
 	sdl.PauseAudio(false)
