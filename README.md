@@ -8,19 +8,19 @@ Author: [Charney Kaye](http://w.charney.io)
 
     go run stars.go
 
-![Stars](docs/stars.png)
+![Stars](stars/screenshot.png)
 
 ## Radar Stars
 
     go run radar_stars.go
 
-![Radar Stars](docs/radar_stars.png)
+![Radar Stars](radar_stars/screenshot.png)
 
 ***TODO:*** Replace infinite `for alive {}` loop with a sdl.Event handler, that only performs the life/render work in between display frames?
 
 ## Fire
 
-![Fire](docs/fire.png)
+![Fire](fire/screenshot.png)
 
     go run fire.go
 
