@@ -8,13 +8,14 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
+	"sort"
 )
 
 var winWidth, winHeight int32 = 800, 600
-var starRadius int32 = 2
+var starRadius int32 = 3
 var starBrightnessDecay float64 = 0.001
 var starBrightnessThreshold float64 = 0.05
-var numStars int = 10000
+var numStars int = 20000
 
 /* the smallest type of thing is a
 ███████╗████████╗ █████╗ ██████╗
@@ -48,6 +49,23 @@ func (s *Star) Life() {
 	}
 }
 
+type starSlice []*Star
+
+// Len is part of sort.Interface.
+func (d starSlice) Len() int {
+	return len(d)
+}
+
+// Swap is part of sort.Interface.
+func (d starSlice) Swap(i, j int) {
+	d[i], d[j] = d[j], d[i]
+}
+
+// Less is part of sort.Interface. We use B as the value to sort by
+func (d starSlice) Less(i, j int) bool {
+	return d[i].B < d[j].B
+}
+
 /* there is one radar for the whole
  ██████╗  █████╗ ███╗   ███╗███████╗
 ██╔════╝ ██╔══██╗████╗ ████║██╔════╝
@@ -68,7 +86,7 @@ type Game struct {
 	/* public */
 	Name string
 	/* private: Stars */
-	m_Stars []*Star
+	m_Stars starSlice
 	/* private */
 	m_State StateEnum
 	nowMs   uint32
@@ -179,6 +197,8 @@ func (g *Game) Render() {
 }
 
 func (g *Game) RenderStarsToScreenSurface() int {
+	// First, sort the stars (by brightness) for optimal rendering
+	sort.Sort(g.m_Stars)
 	for _, star := range g.m_Stars {
 		star.RenderToSurface(g.sdlScreenSurface)
 		star.Life()
