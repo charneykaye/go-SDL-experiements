@@ -27,6 +27,33 @@ func main() {
 	}
 	defer sdl.Quit() // TODO: wrap this with func: recover from panic (pause audio stream?) then sdl.Quit
 
+	var (
+		start = time.Now().Add(1 * time.Second) // 1 second delay before start
+		beat = 500 * time.Millisecond
+		loops = 4
+		)
+
+	var (
+		p808 = "assets/sounds/percussion/808/"
+		kick1 = p808 + "kick1.wav"
+		kick2 = p808 + "kick2.wav"
+		snare = p808 + "snare.wav"
+		marac = p808 + "maracas.wav"
+		)
+
+	for n := 0; n < loops; n++ {
+		atomix.Play(kick1, start, 1)
+		atomix.Play(marac, start + 0.5 * beat, 0.5)
+		atomix.Play(snare, start + 1 * beat, 0.8)
+		atomix.Play(marac, start + 1.5 * beat, 0.5)
+		atomix.Play(kick2, start + 1.75 * beat, 0.9)
+		atomix.Play(marac, start + 2.5 * beat, 0.5)
+		atomix.Play(kick2, start + 2.5 * beat, 0.9)
+		atomix.Play(snare, start + 3 * beat, 0.8)
+		atomix.Play(marac, start + 3.5 * beat, 0.5)
+		start += 4 * beat
+	}
+
 	spec := atomix.Spec(&sdl.AudioSpec{
 		Freq:     sampleHz,
 		Format:   sdl.AUDIO_U16,
@@ -41,52 +68,3 @@ func main() {
 
 	time.Sleep(1 * time.Second)
 }
-
-
-
-/*
-
-// read audio file
-
-func ReadAudio() {
-
-	file := "assets/sounds/percussion/808/kick1.wav"
-
-	data, spec := sdl.LoadWAV(file, &sdl.AudioSpec{})
-
-	log.WithFields(log.Fields{
-		"spec":   spec,
-	}).Info("Loaded")
-
-	for n := 0; n < len(data); n += 2 {
-		StoreSample(data[n:n+2])
-	}
-}
-
-func StoreSample(s []byte) {
-	storedAudio = append(storedAudio, C.Uint16(int32(s[0]) + int32(s[1])<<8))
-}
-
-var storedAudio []C.Uint16
-var	(
-	defaultSample = uint16(0xFFFF)
-	defaultAudio = C.Uint16(defaultSample)
-)
-
-//export AudioCallback
-func AudioCallback(userdata unsafe.Pointer, stream *C.Uint16, length C.int) {
-	n := int(length)
-	hdr := reflect.SliceHeader{Data: uintptr(unsafe.Pointer(stream)), Len: n, Cap: n}
-	buf := *(*[]C.Uint16)(unsafe.Pointer(&hdr))
-
-	for i := 0; i < n; i += 1 {
-		if i < len(storedAudio) {
-			buf[i] = storedAudio[i]
-		} else {
-			buf[i] = defaultAudio
-		}
-	}
-	fmt.Printf("AudioCallback length %d\n", n)
-}
-
-*/
