@@ -41,7 +41,7 @@ func main() {
 		marac = p808 + "maracas.wav"
 	)
 
-	spec := atomix.Spec(&sdl.AudioSpec{
+	spec := atomix.Spec(sdl.AudioSpec{
 		Freq:     sampleHz,
 		Format:   sdl.AUDIO_U16,
 		Channels: 2,
