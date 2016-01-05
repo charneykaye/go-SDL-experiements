@@ -15,7 +15,7 @@ import (
 
 const (
 	sampleHz   = 44100
-	numSamples = 22050
+	numSamples = 4096
 )
 
 func main() {
@@ -37,38 +37,38 @@ func main() {
     }()
 
 	var (
-		step = 125 * time.Millisecond
-		// loops = 4
-		loops = 1
+		step = 150 * time.Millisecond
+		loops = 4
 	)
 
 	var (
 		p808  = "assets/sounds/percussion/808/"
 		kick1 = p808 + "kick1.wav"
-		// kick2 = p808 + "kick2.wav"
-		// snare = p808 + "snare.wav"
+		kick2 = p808 + "kick2.wav"
+		snare = p808 + "snare.wav"
 		// marac = p808 + "maracas.wav"
 	)
 
 	atomix.Debug(true)
 	atomix.Configure(sdl.AudioSpec{
 			Freq:     sampleHz,
-			Format:   sdl.AUDIO_U16,
-			Channels: 2,
+			Format:   sdl.AUDIO_S16,
+			Channels: 1,
 			Samples:  numSamples,
 		})
+	atomix.StartAt(time.Now().Add(1 * time.Second))
 
 	t := 1 * time.Second // padding before music
 	for n := 0; n < loops; n++ {
-        atomix.Play(kick1, t,            16 *step,    0.5)
-        // atomix.Play(marac, t + 1 *step,  1 *step,  0.5)
-        // atomix.Play(snare, t + 4 *step,  4 *step,  0.8)
-        // atomix.Play(marac, t + 6 *step,  1 *step,  0.5)
-        // atomix.Play(kick2, t + 7 *step,  4 *step,  0.9)
-        // atomix.Play(marac, t + 10 *step, 1 *step,  0.5)
-        // atomix.Play(kick2, t + 10 *step, 4 *step,  0.9)
-        // atomix.Play(snare, t + 12 *step, 4 *step,  0.8)
-        // atomix.Play(marac, t + 14 *step, 1 *step,  0.5)
+        atomix.SetFire(kick1, t,            16 *step,    1.0)
+        // atomix.SetFire(marac, t + 1 *step,  1 *step,  0.5)
+        atomix.SetFire(snare, t + 4 *step,  4 *step,  0.8)
+        // atomix.SetFire(marac, t + 6 *step,  1 *step,  0.5)
+        atomix.SetFire(kick2, t + 7 *step,  4 *step,  0.9)
+        // atomix.SetFire(marac, t + 10 *step, 1 *step,  0.5)
+        atomix.SetFire(kick2, t + 10 *step, 4 *step,  0.9)
+        atomix.SetFire(snare, t + 12 *step, 4 *step,  0.8)
+        // atomix.SetFire(marac, t + 14 *step, 1 *step,  0.5)
 		t += 16 * step
 	}
 
