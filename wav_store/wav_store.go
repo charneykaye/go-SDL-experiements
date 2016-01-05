@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	sampleFile string = "kick1.wav"
+	sampleFile string = "rickroll.wav"
 	samples   []uint16
 	nowSample int
 )
