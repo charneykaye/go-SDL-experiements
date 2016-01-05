@@ -38,15 +38,16 @@ func main() {
 
 	var (
 		step = 125 * time.Millisecond
-		loops = 4
+		// loops = 4
+		loops = 1
 	)
 
 	var (
 		p808  = "assets/sounds/percussion/808/"
 		kick1 = p808 + "kick1.wav"
-		kick2 = p808 + "kick2.wav"
-		snare = p808 + "snare.wav"
-		marac = p808 + "maracas.wav"
+		// kick2 = p808 + "kick2.wav"
+		// snare = p808 + "snare.wav"
+		// marac = p808 + "maracas.wav"
 	)
 
 	atomix.Debug(true)
@@ -59,15 +60,15 @@ func main() {
 
 	t := 1 * time.Second // padding before music
 	for n := 0; n < loops; n++ {
-        atomix.Play(kick1, t,            4 *step,  1.0)
-        atomix.Play(marac, t + 1 *step,  1 *step,  0.5)
-        atomix.Play(snare, t + 4 *step,  4 *step,  0.8)
-        atomix.Play(marac, t + 6 *step,  1 *step,  0.5)
-        atomix.Play(kick2, t + 7 *step,  4 *step,  0.9)
-        atomix.Play(marac, t + 10 *step, 1 *step,  0.5)
-        atomix.Play(kick2, t + 10 *step, 4 *step,  0.9)
-        atomix.Play(snare, t + 12 *step, 4 *step,  0.8)
-        atomix.Play(marac, t + 14 *step, 1 *step,  0.5)
+        atomix.Play(kick1, t,            16 *step,    0.5)
+        // atomix.Play(marac, t + 1 *step,  1 *step,  0.5)
+        // atomix.Play(snare, t + 4 *step,  4 *step,  0.8)
+        // atomix.Play(marac, t + 6 *step,  1 *step,  0.5)
+        // atomix.Play(kick2, t + 7 *step,  4 *step,  0.9)
+        // atomix.Play(marac, t + 10 *step, 1 *step,  0.5)
+        // atomix.Play(kick2, t + 10 *step, 4 *step,  0.9)
+        // atomix.Play(snare, t + 12 *step, 4 *step,  0.8)
+        // atomix.Play(marac, t + 14 *step, 1 *step,  0.5)
 		t += 16 * step
 	}
 
