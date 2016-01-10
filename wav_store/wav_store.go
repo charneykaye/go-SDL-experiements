@@ -99,5 +99,5 @@ func main() {
 	sdl.OpenAudio(loadSpec, nil)
 	sdl.PauseAudio(false)
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(18 * time.Second)
 }
