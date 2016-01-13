@@ -18,11 +18,6 @@ var (
 	graphDecay             float64 = 0.98
 )
 
-const (
-	GOLDEN_RATIO float64 = 1.61803398875
-	INVERSE_GOLDEN_RATIO float64 = 1 / GOLDEN_RATIO
-)
-
 /* there is one
   ▄▀  █▄▄▄▄ ██   █ ▄▄   ▄  █
 ▄▀    █  ▄▀ █ █  █   █ █   █
@@ -98,7 +93,7 @@ func (r *Graph) Algorithm(i float64) float64 {
 	} else if i > 1 {
 		return math.Log(i - 0.85) / 14 + 0.75
 	} else {
-		return i / GOLDEN_RATIO
+		return i / 1.61803398875
 	}
 }
 
